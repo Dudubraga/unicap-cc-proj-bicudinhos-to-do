@@ -1,15 +1,19 @@
-import { Text, View } from "react-native";
+import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { useTheme } from '@react-navigation/native';
+import TopBar from "../components/TopBar";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+    <View>
+      <TopBar title="Home" />
+      <View>
+        {/* Tela Home */}
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+
+});
