@@ -69,6 +69,40 @@ export default function DetalheProjeto() {
         Alert.alert("Erro", `Não foi possível adicionar a nova tarefa: ${e.message}`);
     }
   };
+  const handleUpdateProject = async () => {
+    if (!projectId) return;
+    const endpoint = `Projeto/${projectId}`;
+    try {
+      await api.put(endpoint, { cadeira, descricao });
+      Alert.alert("Sucesso", "Projeto atualizado!");
+      router.back();
+    } catch (e: any) {
+      Alert.alert("Erro", `Não foi possível salvar as alterações: ${e.message}`);
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    if (!projectId) return;
+    const endpoint = `Projeto/${projectId}`;
+    try {
+      await api.del(endpoint);
+      Alert.alert("Sucesso", "Projeto excluído.");
+      router.push('/');
+    } catch (e: any) {
+      Alert.alert("Erro", `Não foi possível excluir o projeto: ${e.message}`);
+    }
+  };
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Confirmar Exclusão",
+      "Você tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Excluir", style: "destructive", onPress: handleDeleteProject },
+      ]
+    );
+  };
   return (
     <View>
       <TopBar title="Detalhe do Projeto" />
