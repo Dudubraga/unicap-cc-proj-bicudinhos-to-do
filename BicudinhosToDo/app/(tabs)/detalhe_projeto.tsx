@@ -1,7 +1,7 @@
-import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Platform } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTheme } from '@react-navigation/native';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
+import { ActivityIndicator, Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TopBar from "../components/TopBar";
 import { api } from '../services/api';
 
@@ -103,6 +103,29 @@ export default function DetalheProjeto() {
       ]
     );
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#9C743A" />
+      </View>
+    );
+  }
+
+  if (error && !loading) {
+    return (
+        <View style={[styles.body, {backgroundColor: colors.background}]}>
+            <TopBar title="Detalhes do Projeto" />
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20}}>
+                <Text style={styles.errorText}>Erro: {error}</Text>
+                <TouchableOpacity style={styles.saveButton} onPress={fetchProjectDetails}>
+                    <Text style={styles.buttonText}>Tentar Novamente</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+  }
+
   return (
     <View>
       <TopBar title="Detalhe do Projeto" />
