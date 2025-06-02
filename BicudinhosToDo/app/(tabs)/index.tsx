@@ -8,12 +8,40 @@ export default function Index() {
     <View>
       <TopBar title="Home" />
       <View>
-        {/* Tela Home */}
+        {return (
+    <View style={[styles.body, {backgroundColor: colors.background}]}>
+      <TopBar title="Home" />
+      <View style={styles.container}>
+        {linhas.map((linha, idx) => (
+          <View
+            key={idx}
+            style={linha.length === 1 ? styles.rowCenter : styles.row}
+          >
+            {linha.map((nome: string) => (
+              <TouchableOpacity
+                key={nome}
+                style={[styles.circle,
+                  { backgroundColor: colors.card }
+                ]}
+                onPress={() => handleIntegrantePress(nome)}
+              >
+                <Image
+                  source={require("../../assets/images/icon-user.png")}
+                  style={[styles.icon, { tintColor: colors.text }]}
+                />
+                <Text style={{ color: colors.text }}>{nome}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ))}
+      </View>
+    </View>
+  );}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
+  
 });
