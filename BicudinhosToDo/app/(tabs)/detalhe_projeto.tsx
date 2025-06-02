@@ -113,6 +113,121 @@ export default function DetalheProjeto() {
   );
 }
 
+const m = Platform.OS === "ios" ? 12 : 10;
 const styles = StyleSheet.create({
-
+    body: {
+        flex: 1,
+    },
+    container: {
+        padding: 20,
+    },
+    label: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 16,
+        marginBottom: 8,
+    },
+    input: {
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        fontSize: 16,
+        borderWidth: 1,
+        borderColor: '#9C743A'
+    },
+    inputDescricao: {
+        height: 100,
+        textAlignVertical: 'top',
+    },
+    taskCard: {
+        borderRadius: 8,
+        padding: 16,
+        marginBottom: 10,
+    },
+    taskContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    checkbox: {
+        width: 24,
+        height: 24,
+        marginRight: 12,
+    },
+    taskText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        flex: 1,
+    },
+    taskTextCompleted: {
+        textDecorationLine: 'line-through',
+    },
+    integrantesText: {
+        fontSize: 14,
+        marginTop: 4,
+        marginLeft: 36,
+    },
+    addTaskContainer: {
+        marginTop: 24,
+        paddingTop: 24,
+        borderTopWidth: 1,
+    },
+    integrantesLabel: {
+        fontSize: 16,
+        marginTop: 12,
+        marginBottom: 8,
+    },
+    integrantesSelector: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginBottom: 12,
+    },
+    integranteChip: {
+        backgroundColor: '#e0e0e0',
+        borderRadius: 16,
+        paddingVertical: 6,
+        paddingHorizontal: m,
+        margin: 4,
+    },
+    integranteChipSelected: {
+        backgroundColor: '#7B2D2F',
+    },
+    integranteChipText: {
+        color: '#333',
+    },
+    integranteChipTextSelected: {
+        color: '#fff',
+    },
+    addButton: {
+        backgroundColor: '#3B9C7A',
+        padding: 16,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 12,
+    },
+    saveButton: {
+        backgroundColor: '#9C743A',
+        padding: 16,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 30,
+    },
+    deleteButton: {
+        backgroundColor: '#7B2D2F',
+        padding: 16,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 12,
+        marginBottom: 20,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    errorText: {
+        color: 'red',
+        textAlign: 'center',
+        fontSize: 16,
+        marginBottom: 10,
+    },
 });
