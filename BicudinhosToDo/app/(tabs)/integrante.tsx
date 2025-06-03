@@ -10,7 +10,14 @@ export default function Integrante() {
     <View>
       <TopBar title="Tarefas - Integrante" />
       <ScrollView>
-        {/* Tela do Integrante */}
+        {
+        const handleNavigateToDetails = (projectId: string) => {
+          router.push({
+            pathname: '/detalhe_projeto',
+            params: { projectId: projectId }
+        });
+      };
+  }
       </ScrollView>
     </View>
   );
