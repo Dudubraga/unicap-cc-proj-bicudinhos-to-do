@@ -53,23 +53,36 @@ export default function Integrante() {
   }, [nome]);
 
   const renderContent = () => {
-    
-    // loading + tratamento de erro + filtro de projetos
+    if (loading) {
+      return <ActivityIndicator size="large" color="#9C743A" />;
+    }
+
+    if (error) {
+      return <Text style={[styles.errorText, {color: colors.text}]}>Erro: {error}</Text>;
+    }
+
+    const projetosDoIntegrante = projetos.filter(p =>
+      p.Tarefas && p.Tarefas.some(t => t.integrantes.includes(nome!))
+    );
+
+    if (projetosDoIntegrante.length === 0) {
+      return <Text style={[styles.infoText, {color: colors.text}]}>Nenhuma tarefa encontrada para {nome}.</Text>;
+    }
 
     return projetosDoIntegrante.map((projeto) => (
-        <View key={projeto.objectId} style={styles.projetoContainer}>
-          <Text style={[styles.projetoTitle, {color: colors.text, borderBottomColor: colors.text}]}>{projeto.cadeira}</Text>
-          {projeto.Tarefas
-            .filter((tarefa) => tarefa.integrantes.includes(nome!))
-            .map((tarefa) => (
-              <TouchableOpacity key={tarefa.objectId} onPress={() => handleNavigateToDetails(projeto.objectId)}>
-                <View style={[styles.taskCard, {backgroundColor: colors.card}]}>
-                  <Text style={[styles.taskText, {color: colors.text}]}>{tarefa.nome}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-        </View>
-      ));
+      <View key={projeto.objectId} style={styles.projetoContainer}>
+        <Text style={[styles.projetoTitle, {color: colors.text, borderBottomColor: colors.text}]}>{projeto.cadeira}</Text>
+        {projeto.Tarefas
+          .filter((tarefa) => tarefa.integrantes.includes(nome!))
+          .map((tarefa) => (
+            <TouchableOpacity key={tarefa.objectId} onPress={() => handleNavigateToDetails(projeto.objectId)}>
+              <View style={[styles.taskCard, {backgroundColor: colors.card}]}>
+                <Text style={[styles.taskText, {color: colors.text}]}>{tarefa.nome}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+      </View>
+    ));
   };
 
   return (
