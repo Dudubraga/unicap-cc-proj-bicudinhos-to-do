@@ -224,7 +224,17 @@ export default function CriarProjeto() {
               </View>
             ))}
           </View>
-          
+            <TouchableOpacity 
+            style={[styles.submitButton, loading && styles.submitButtonDisabled ]} 
+            onPress={handleSubmitProjeto}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.submitButtonText}>Criar Projeto</Text>
+            )}
+          </TouchableOpacity>
         </View>
       </ScrollView>
       </View>
