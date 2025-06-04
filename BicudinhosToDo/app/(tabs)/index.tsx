@@ -3,7 +3,38 @@ import { useRouter } from "expo-router";
 import { useTheme } from '@react-navigation/native';
 import TopBar from "../components/TopBar";
 
+
+
+
+
 export default function Index() {
+  const integrantes: string[] = [
+    "Eduardo",
+    "Henrique",
+    "Isabela",
+    "Júlia",
+    "Rafael",
+  ];
+  
+  function chunkArray<T>(array: T[], size: number): T[][] {
+    const result: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  }
+  
+  export default function Index() {
+    const router = useRouter();
+    const linhas = chunkArray(integrantes, 2);
+    const { colors } = useTheme();
+  
+    const handleIntegrantePress = (nome: string) => {
+      router.push({
+        pathname: "/integrante",
+        params: { nome: nome },
+      });
+    };
   return (
     <View>
       <TopBar title="Home" />
