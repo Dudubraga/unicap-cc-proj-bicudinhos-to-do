@@ -7,6 +7,20 @@ import TopBar from "../components/TopBar";
 
 // integrantes + tasks + pointer
 
+  const integrantes = ["Eduardo", "Henrique", "Isabela", "Júlia", "Rafael"];
+
+  type Task = {
+    nome: string;
+    integrantes: string[];
+  };
+
+  type Pointer = {
+    __type: 'Pointer';
+    className: string;
+    objectId: string;
+  };
+
+
 export default function CriarProjeto() {
   // consts?
 
