@@ -153,7 +153,42 @@ export default function CriarProjeto() {
     <View>
       <TopBar title="Criar Projeto" />
       <View>
-        {/* Tela Criar Projeto */}
+        <ScrollView contentContainerStyle={styles.scroll}>
+        <View style={styles.container}>
+          <View style={styles.row}>
+            <TextInput
+              placeholder="Cadeira"
+              placeholderTextColor="rgba(156,116,58,0.5)"
+              style={[styles.input, {backgroundColor: colors.card}]}
+              value={cadeira}
+              onChangeText={setCadeira}
+            />
+            <TouchableOpacity style={[styles.iconBox, {backgroundColor: colors.card}]} onPress={() => setShowDatePicker(true)}>
+              <Image source={require("../../assets/images/icon-calendar.png")} style={[styles.icon, {tintColor: colors.text}]} />
+            </TouchableOpacity>
+          </View>
+          {showDatePicker && (
+            <View style={{ backgroundColor: 'lightgrey', borderRadius: 10 }}>
+            <DateTimePicker
+              value={date || new Date()}
+              mode="date"
+              display={Platform.OS === "ios" ? "inline" : "default"}
+              onChange={onChangeDate}
+              textColor={Platform.OS === "ios" ? "black" : undefined}
+              />
+              </View>
+          )}
+          <TextInput
+            placeholder="Descrição"
+            placeholderTextColor="rgba(156,116,58,0.5)"
+            style={[styles.input, styles.inputDescricao, {backgroundColor: colors.card}]}
+            multiline
+            value={descricao}
+            onChangeText={setDescricao}
+          />
+          
+        </View>
+      </ScrollView>
       </View>
     </View>
   );
