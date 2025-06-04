@@ -20,7 +20,14 @@ type Projeto = {
 };
 
 export default function Integrante() {
-  // consts ?
+
+  const router = useRouter();
+  const { nome } = useLocalSearchParams<{ nome: string }>();
+  const { colors } = useTheme();
+  
+  const [projetos, setProjetos] = useState<Projeto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!nome) return;
