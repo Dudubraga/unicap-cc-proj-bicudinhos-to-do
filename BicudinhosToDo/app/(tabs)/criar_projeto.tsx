@@ -186,6 +186,44 @@ export default function CriarProjeto() {
             value={descricao}
             onChangeText={setDescricao}
           />
+          <View style={styles.row}>
+            <TextInput
+              placeholder="Task"
+              placeholderTextColor="rgba(156,116,58,0.5)"
+              style={[styles.input, {backgroundColor: colors.card}]}
+              value={taskInput}
+              onChangeText={setTaskInput}
+            />
+            <TouchableOpacity style={[styles.iconBox, {backgroundColor: colors.card}]} onPress={handleAddTask}>
+              <Image source={require("../../assets/images/icon-add.png")} style={[styles.icon, {tintColor: colors.text}]} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.integrantesRow}>
+            {integrantes.map((nome) => (
+              <TouchableOpacity
+                key={nome}
+                style={[
+                  styles.userBox,
+                  selectedIntegrantes.includes(nome) && { borderColor: colors.text},
+                  {backgroundColor: colors.card }
+                ]}
+                onPress={() => toggleIntegrante(nome)}
+              >
+                <Image source={require("../../assets/images/icon-user.png")} style={[styles.userIcon, {tintColor: colors.text}]} />
+                <Text style={[{ fontSize: 12 }, { color: colors.text }]}>{nome}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.tasksGrid}>
+            {tasks.map((task, i) => (
+              <View key={i} style={[styles.taskBox, {backgroundColor: colors.card}]}>
+                <Text style={{ color: colors.text, fontSize: 18 }}>{task.nome}</Text>
+                <Text style={{ color: colors.text, fontSize: 12 }}>
+                  {task.integrantes.join(", ")}
+                </Text>
+              </View>
+            ))}
+          </View>
           
         </View>
       </ScrollView>
