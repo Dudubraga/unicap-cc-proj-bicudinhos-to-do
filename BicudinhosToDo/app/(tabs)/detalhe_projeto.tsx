@@ -1,9 +1,9 @@
-import { useTheme } from '@react-navigation/native';
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
-import { ActivityIndicator, Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import TopBar from "../components/TopBar";
+import React, { useEffect, useState } from "react";
 import { api } from '../services/api';
+import TopBar from "../components/TopBar";
+import { useTheme } from '@react-navigation/native';
 
 export default function DetalheProjeto() {
   const router = useRouter();
@@ -19,6 +19,29 @@ export default function DetalheProjeto() {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchProjectDetails = async () => {
+    if (!projectId) return;
+    const endpoint = `Projeto/${projectId}?include=Tarefas`;
+    try {
+      !loading && setLoading(true);
+      const data = await api.get(endpoint);
+      setCadeira(data.cadeira);
+      setDescricao(data.descricao);
+      setTarefas(data.Tarefas || []);
+    } catch (e: any) {
+      setError(e.message);
+      Alert.alert("Erro", "Falha ao carregar detalhes do projeto.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (projectId) {
+      fetchProjectDetails();
+    }
+  }, [projectId]);
 
   const handleToggleTask = async (task: Tarefa) => {
     const endpoint = `Tarefas/${task.objectId}`;

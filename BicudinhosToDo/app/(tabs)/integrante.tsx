@@ -5,19 +5,78 @@ import { useTheme } from '@react-navigation/native';
 import TopBar from "../components/TopBar";
 import { api } from '../services/api';
 
+type Tarefa = {
+  objectId: string;
+  nome: string;
+  integrantes: string[];
+  concluida: boolean;
+};
+
+type Projeto = {
+  objectId: string;
+  cadeira: string;
+  descricao: string;
+  Tarefas: Tarefa[];
+};
+
 export default function Integrante() {
-  return (
-    <View>
-      <TopBar title="Tarefas - Integrante" />
-      <ScrollView>
-        {
-        const handleNavigateToDetails = (projectId: string) => {
-          router.push({
-            pathname: '/detalhe_projeto',
-            params: { projectId: projectId }
-        });
+  // consts ?
+
+  useEffect(() => {
+    if (!nome) return;
+
+    const fetchTasks = async () => {
+      const innerQuery = { integrantes: nome };
+      const outerQuery = {
+        Tarefas: {
+          $inQuery: {
+            where: innerQuery,
+            className: "Tarefas",
+          },
+        },
       };
-  }
+
+      const params = `where=${JSON.stringify(outerQuery)}&include=Tarefas`;
+      const endpoint  = `Projeto?${params}`;
+
+      try {
+        setLoading(true);
+        const data = await api.get(endpoint);
+        setProjetos(data.results);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTasks();
+  }, [nome]);
+
+  const renderContent = () => {
+    
+    // loading + tratamento de erro + filtro de projetos
+
+    return projetosDoIntegrante.map((projeto) => (
+        <View key={projeto.objectId} style={styles.projetoContainer}>
+          <Text style={[styles.projetoTitle, {color: colors.text, borderBottomColor: colors.text}]}>{projeto.cadeira}</Text>
+          {projeto.Tarefas
+            .filter((tarefa) => tarefa.integrantes.includes(nome!))
+            .map((tarefa) => (
+              <TouchableOpacity key={tarefa.objectId} onPress={() => handleNavigateToDetails(projeto.objectId)}>
+                <View style={[styles.taskCard, {backgroundColor: colors.card}]}>
+                  <Text style={[styles.taskText, {color: colors.text}]}>{tarefa.nome}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+        </View>
+      ));
+  };
+
+  return (
+    <View style={[styles.body, { backgroundColor: colors.background }]}>
+      <TopBar title={`Tarefas - ${nome}`} />
+      <ScrollView>
+        <View style={styles.container}>{renderContent()}</View>
       </ScrollView>
     </View>
   );
