@@ -22,7 +22,17 @@ import TopBar from "../components/TopBar";
 
 
 export default function CriarProjeto() {
-  // consts?
+
+  const router = useRouter();
+  const [taskInput, setTaskInput] = useState("");
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [date, setDate] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedIntegrantes, setSelectedIntegrantes] = useState<string[]>([]);
+  const [cadeira, setCadeira] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { colors } = useTheme();
 
   async function createTarefaAndGetPointer(task: Task): Promise<Pointer> {
     const applicationId = process.env.EXPO_PUBLIC_PARSE_APPLICATION_ID;
@@ -31,6 +41,14 @@ export default function CriarProjeto() {
     if (!applicationId || !restApiKey) {
       throw new Error("As chaves da API não foram encontradas. Verifique o arquivo .env");
     }
+
+    const handleAddTask = () => {
+    if (taskInput.trim() !== "") {
+      setTasks([...tasks, { nome: taskInput, integrantes: selectedIntegrantes }]);
+      setTaskInput("");
+      setSelectedIntegrantes([]);
+     }
+    };
 
     const response = await fetch('https://parseapi.back4app.com/classes/Tarefas', {
       method: 'POST',
@@ -56,6 +74,7 @@ export default function CriarProjeto() {
       className: 'Tarefas',
       objectId: createdTask.objectId,
     };
+    
   }
 
   async function handleSubmitProjeto() {
