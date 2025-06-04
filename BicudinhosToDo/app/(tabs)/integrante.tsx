@@ -1,9 +1,16 @@
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from "@react-navigation/native";
 import TopBar from "../components/TopBar";
-import { api } from '../services/api';
+import { api } from "../services/api";
 
 type Tarefa = {
   objectId: string;
@@ -20,11 +27,10 @@ type Projeto = {
 };
 
 export default function Integrante() {
-
   const router = useRouter();
   const { nome } = useLocalSearchParams<{ nome: string }>();
   const { colors } = useTheme();
-  
+
   const [projetos, setProjetos] = useState<Projeto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +50,7 @@ export default function Integrante() {
       };
 
       const params = `where=${JSON.stringify(outerQuery)}&include=Tarefas`;
-      const endpoint  = `Projeto?${params}`;
+      const endpoint = `Projeto?${params}`;
 
       try {
         setLoading(true);
@@ -65,29 +71,49 @@ export default function Integrante() {
     }
 
     if (error) {
-      return <Text style={[styles.errorText, {color: colors.text}]}>Erro: {error}</Text>;
+      return (
+        <Text style={[styles.errorText, { color: colors.text }]}>
+          Erro: {error}
+        </Text>
+      );
     }
 
-    const projetosDoIntegrante = projetos.filter(p =>
-      p.Tarefas && p.Tarefas.some(t => t.integrantes.includes(nome!))
+    const projetosDoIntegrante = projetos.filter(
+      (p) => p.Tarefas && p.Tarefas.some((t) => t.integrantes.includes(nome!))
     );
 
     if (projetosDoIntegrante.length === 0) {
-      return <Text style={[styles.infoText, {color: colors.text}]}>Nenhuma tarefa encontrada para {nome}.</Text>;
+      return (
+        <Text style={[styles.infoText, { color: colors.text }]}>
+          Nenhuma tarefa encontrada para {nome}.
+        </Text>
+      );
     }
 
     return projetosDoIntegrante.map((projeto) => (
       <View key={projeto.objectId} style={styles.projetoContainer}>
-        <Text style={[styles.projetoTitle, {color: colors.text, borderBottomColor: colors.text}]}>{projeto.cadeira}</Text>
-        {projeto.Tarefas
-          .filter((tarefa) => tarefa.integrantes.includes(nome!))
-          .map((tarefa) => (
-            <TouchableOpacity key={tarefa.objectId} onPress={() => handleNavigateToDetails(projeto.objectId)}>
-              <View style={[styles.taskCard, {backgroundColor: colors.card}]}>
-                <Text style={[styles.taskText, {color: colors.text}]}>{tarefa.nome}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+        <Text
+          style={[
+            styles.projetoTitle,
+            { color: colors.text, borderBottomColor: colors.text },
+          ]}
+        >
+          {projeto.cadeira}
+        </Text>
+        {projeto.Tarefas.filter((tarefa) =>
+          tarefa.integrantes.includes(nome!)
+        ).map((tarefa) => (
+          <TouchableOpacity
+            key={tarefa.objectId}
+            onPress={() => handleNavigateToDetails(projeto.objectId)}
+          >
+            <View style={[styles.taskCard, { backgroundColor: colors.card }]}>
+              <Text style={[styles.taskText, { color: colors.text }]}>
+                {tarefa.nome}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     ));
   };
@@ -103,5 +129,43 @@ export default function Integrante() {
 }
 
 const styles = StyleSheet.create({
-
+  body: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  container: {
+    flex: 1,
+    width: "90%",
+    alignSelf: "center",
+    paddingVertical: 20,
+  },
+  projetoContainer: {
+    marginBottom: 24,
+  },
+  projetoTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 12,
+    borderBottomWidth: 2,
+    paddingBottom: 4,
+  },
+  taskCard: {
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 8,
+  },
+  taskText: {
+    fontSize: 16,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  infoText: {
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 40,
+  },
 });
