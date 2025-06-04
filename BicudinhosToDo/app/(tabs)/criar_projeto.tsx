@@ -50,6 +50,19 @@ export default function CriarProjeto() {
      }
     };
 
+    const toggleIntegrante = (nome: string) => {
+    setSelectedIntegrantes((prev) =>
+      prev.includes(nome)
+        ? prev.filter((n) => n !== nome)
+        : [...prev, nome]
+      );
+    };
+
+    const onChangeDate = (event: any, selectedDate?: Date) => {
+      setShowDatePicker(false);
+      if (selectedDate) setDate(selectedDate);
+    };
+
     const response = await fetch('https://parseapi.back4app.com/classes/Tarefas', {
       method: 'POST',
       headers: {
@@ -74,6 +87,7 @@ export default function CriarProjeto() {
       className: 'Tarefas',
       objectId: createdTask.objectId,
     };
+    
     
   }
 
