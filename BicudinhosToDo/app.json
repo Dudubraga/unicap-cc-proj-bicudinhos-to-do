@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "BicudinhosToDo",
-    "slug": "BicudinhosToDo",
+    "slug": "bicudinhos-todo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo-ToDo.png",
@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/logo-ToDo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.edubraga.bicudinhostodo"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2edf3407-b004-406b-ba82-ca3bf2bc4960"
+      }
+    },
+    "owner": "edubraga"
   }
 }
