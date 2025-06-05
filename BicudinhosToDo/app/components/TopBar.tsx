@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, Text, Platform } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View, Platform } from "react-native";
 
 type TopBarProps = {
   title: string;
@@ -15,18 +15,18 @@ export default function TopBar({ title }: TopBarProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#7B2D2F',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#7B2D2F",
     padding: 16,
     marginBottom: 15,
   },
   title: {
     flex: 1,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: Platform.OS === 'ios' ? 30 : 15,
-    color: '#fff',
+    fontWeight: "bold",
+    marginTop: Platform.OS === "ios" ? 30 : 15,
+    color: "#fff",
   },
 });

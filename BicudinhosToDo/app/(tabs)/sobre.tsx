@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, Platform } from "react-native";
-import { useTheme } from "@react-navigation/native";
 import TopBar from "../components/TopBar";
+import { useTheme } from "@react-navigation/native";
 
 export default function Sobre() {
   const { colors } = useTheme();

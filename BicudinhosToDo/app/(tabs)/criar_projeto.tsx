@@ -1,21 +1,19 @@
 import {
-  View,
+  ActivityIndicator,
+  Image,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
-  Image,
   TouchableOpacity,
-  ActivityIndicator,
-  Platform,
-  ScrollView,
+  View,
 } from "react-native";
-import React, { useState } from "react";
 import { useRouter } from "expo-router";
-import { useTheme } from "@react-navigation/native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import React, { useState } from "react";
 import TopBar from "../components/TopBar";
-
-// integrantes + tasks + pointer
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTheme } from "@react-navigation/native";
 
 const integrantes = ["Eduardo", "Henrique", "Isabela", "Júlia", "Rafael"];
 
@@ -42,6 +40,28 @@ export default function CriarProjeto() {
   const [loading, setLoading] = useState(false);
   const { colors } = useTheme();
 
+  const handleAddTask = () => {
+    if (taskInput.trim() !== "") {
+      setTasks([
+        ...tasks,
+        { nome: taskInput, integrantes: selectedIntegrantes },
+      ]);
+      setTaskInput("");
+      setSelectedIntegrantes([]);
+    }
+  };
+
+  const toggleIntegrante = (nome: string) => {
+    setSelectedIntegrantes((prev) =>
+      prev.includes(nome) ? prev.filter((n) => n !== nome) : [...prev, nome]
+    );
+  };
+
+  const onChangeDate = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) setDate(selectedDate);
+  };
+
   async function createTarefaAndGetPointer(task: Task): Promise<Pointer> {
     const applicationId = process.env.EXPO_PUBLIC_PARSE_APPLICATION_ID;
     const restApiKey = process.env.EXPO_PUBLIC_PARSE_REST_API_KEY;
@@ -51,28 +71,6 @@ export default function CriarProjeto() {
         "As chaves da API não foram encontradas. Verifique o arquivo .env"
       );
     }
-
-    const handleAddTask = () => {
-      if (taskInput.trim() !== "") {
-        setTasks([
-          ...tasks,
-          { nome: taskInput, integrantes: selectedIntegrantes },
-        ]);
-        setTaskInput("");
-        setSelectedIntegrantes([]);
-      }
-    };
-
-    const toggleIntegrante = (nome: string) => {
-      setSelectedIntegrantes((prev) =>
-        prev.includes(nome) ? prev.filter((n) => n !== nome) : [...prev, nome]
-      );
-    };
-
-    const onChangeDate = (event: any, selectedDate?: Date) => {
-      setShowDatePicker(false);
-      if (selectedDate) setDate(selectedDate);
-    };
 
     const response = await fetch(
       "https://parseapi.back4app.com/classes/Tarefas",
@@ -171,125 +169,123 @@ export default function CriarProjeto() {
   }
 
   return (
-    <View>
-      <TopBar title="Criar Projeto" />
-      <View>
-        <ScrollView contentContainerStyle={styles.scroll}>
-          <View style={styles.container}>
-            <View style={styles.row}>
-              <TextInput
-                placeholder="Cadeira"
-                placeholderTextColor="rgba(156,116,58,0.5)"
-                style={[styles.input, { backgroundColor: colors.card }]}
-                value={cadeira}
-                onChangeText={setCadeira}
-              />
-              <TouchableOpacity
-                style={[styles.iconBox, { backgroundColor: colors.card }]}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <Image
-                  source={require("../../assets/images/icon-calendar.png")}
-                  style={[styles.icon, { tintColor: colors.text }]}
-                />
-              </TouchableOpacity>
-            </View>
-            {showDatePicker && (
-              <View style={{ backgroundColor: "lightgrey", borderRadius: 10 }}>
-                <DateTimePicker
-                  value={date || new Date()}
-                  mode="date"
-                  display={Platform.OS === "ios" ? "inline" : "default"}
-                  onChange={onChangeDate}
-                  textColor={Platform.OS === "ios" ? "black" : undefined}
-                />
-              </View>
-            )}
+    <View style={[styles.body, { backgroundColor: colors.background }]}>
+      <TopBar title="Novo Projeto" />
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <View style={styles.container}>
+          <View style={styles.row}>
             <TextInput
-              placeholder="Descrição"
+              placeholder="Cadeira"
               placeholderTextColor="rgba(156,116,58,0.5)"
-              style={[
-                styles.input,
-                styles.inputDescricao,
-                { backgroundColor: colors.card },
-              ]}
-              multiline
-              value={descricao}
-              onChangeText={setDescricao}
+              style={[styles.input, { backgroundColor: colors.card }]}
+              value={cadeira}
+              onChangeText={setCadeira}
             />
-            <View style={styles.row}>
-              <TextInput
-                placeholder="Task"
-                placeholderTextColor="rgba(156,116,58,0.5)"
-                style={[styles.input, { backgroundColor: colors.card }]}
-                value={taskInput}
-                onChangeText={setTaskInput}
-              />
-              <TouchableOpacity
-                style={[styles.iconBox, { backgroundColor: colors.card }]}
-                onPress={handleAddTask}
-              >
-                <Image
-                  source={require("../../assets/images/icon-add.png")}
-                  style={[styles.icon, { tintColor: colors.text }]}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.integrantesRow}>
-              {integrantes.map((nome) => (
-                <TouchableOpacity
-                  key={nome}
-                  style={[
-                    styles.userBox,
-                    selectedIntegrantes.includes(nome) && {
-                      borderColor: colors.text,
-                    },
-                    { backgroundColor: colors.card },
-                  ]}
-                  onPress={() => toggleIntegrante(nome)}
-                >
-                  <Image
-                    source={require("../../assets/images/icon-user.png")}
-                    style={[styles.userIcon, { tintColor: colors.text }]}
-                  />
-                  <Text style={[{ fontSize: 12 }, { color: colors.text }]}>
-                    {nome}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={styles.tasksGrid}>
-              {tasks.map((task, i) => (
-                <View
-                  key={i}
-                  style={[styles.taskBox, { backgroundColor: colors.card }]}
-                >
-                  <Text style={{ color: colors.text, fontSize: 18 }}>
-                    {task.nome}
-                  </Text>
-                  <Text style={{ color: colors.text, fontSize: 12 }}>
-                    {task.integrantes.join(", ")}
-                  </Text>
-                </View>
-              ))}
-            </View>
             <TouchableOpacity
-              style={[
-                styles.submitButton,
-                loading && styles.submitButtonDisabled,
-              ]}
-              onPress={handleSubmitProjeto}
-              disabled={loading}
+              style={[styles.iconBox, { backgroundColor: colors.card }]}
+              onPress={() => setShowDatePicker(true)}
             >
-              {loading ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <Text style={styles.submitButtonText}>Criar Projeto</Text>
-              )}
+              <Image
+                source={require("../../assets/images/icon-calendar.png")}
+                style={[styles.icon, { tintColor: colors.text }]}
+              />
             </TouchableOpacity>
           </View>
-        </ScrollView>
-      </View>
+          {showDatePicker && (
+            <View style={{ backgroundColor: "lightgrey", borderRadius: 10 }}>
+              <DateTimePicker
+                value={date || new Date()}
+                mode="date"
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                onChange={onChangeDate}
+                textColor={Platform.OS === "ios" ? "black" : undefined}
+              />
+            </View>
+          )}
+          <TextInput
+            placeholder="Descrição"
+            placeholderTextColor="rgba(156,116,58,0.5)"
+            style={[
+              styles.input,
+              styles.inputDescricao,
+              { backgroundColor: colors.card },
+            ]}
+            multiline
+            value={descricao}
+            onChangeText={setDescricao}
+          />
+          <View style={styles.row}>
+            <TextInput
+              placeholder="Task"
+              placeholderTextColor="rgba(156,116,58,0.5)"
+              style={[styles.input, { backgroundColor: colors.card }]}
+              value={taskInput}
+              onChangeText={setTaskInput}
+            />
+            <TouchableOpacity
+              style={[styles.iconBox, { backgroundColor: colors.card }]}
+              onPress={handleAddTask}
+            >
+              <Image
+                source={require("../../assets/images/icon-add.png")}
+                style={[styles.icon, { tintColor: colors.text }]}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.integrantesRow}>
+            {integrantes.map((nome) => (
+              <TouchableOpacity
+                key={nome}
+                style={[
+                  styles.userBox,
+                  selectedIntegrantes.includes(nome) && {
+                    borderColor: colors.text,
+                  },
+                  { backgroundColor: colors.card },
+                ]}
+                onPress={() => toggleIntegrante(nome)}
+              >
+                <Image
+                  source={require("../../assets/images/icon-user.png")}
+                  style={[styles.userIcon, { tintColor: colors.text }]}
+                />
+                <Text style={[{ fontSize: 12 }, { color: colors.text }]}>
+                  {nome}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.tasksGrid}>
+            {tasks.map((task, i) => (
+              <View
+                key={i}
+                style={[styles.taskBox, { backgroundColor: colors.card }]}
+              >
+                <Text style={{ color: colors.text, fontSize: 18 }}>
+                  {task.nome}
+                </Text>
+                <Text style={{ color: colors.text, fontSize: 12 }}>
+                  {task.integrantes.join(", ")}
+                </Text>
+              </View>
+            ))}
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              loading && styles.submitButtonDisabled,
+            ]}
+            onPress={handleSubmitProjeto}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.submitButtonText}>Criar Projeto</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 }

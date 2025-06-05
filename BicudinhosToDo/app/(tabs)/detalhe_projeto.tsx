@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   Alert,
-  Animated,
   Image,
   ScrollView,
   StyleSheet,
@@ -16,7 +15,16 @@ import React, { useEffect, useState } from "react";
 import { api } from "../services/api";
 import TopBar from "../components/TopBar";
 import { useTheme } from "@react-navigation/native";
-//ooooooooiiiiiiiii
+
+const GRUPO_INTEGRANTES = ["Eduardo", "Henrique", "Isabela", "Júlia", "Rafael"];
+
+type Tarefa = {
+  objectId: string;
+  nome: string;
+  integrantes: string[];
+  concluida: boolean;
+};
+
 export default function DetalheProjeto() {
   const router = useRouter();
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
@@ -33,21 +41,6 @@ export default function DetalheProjeto() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Animação simples para adicionar tarefa
-  const [addAnim] = useState(new Animated.Value(0));
-  const animateAdd = () => {
-    addAnim.setValue(1);
-    Animated.timing(addAnim, {
-      toValue: 0,
-      duration: 800,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  // Separar tarefas concluídas e pendentes
-  const tarefasPendentes = tarefas.filter((t) => !t.concluida);
-  const tarefasConcluidas = tarefas.filter((t) => t.concluida);
 
   const fetchProjectDetails = async () => {
     if (!projectId) return;
@@ -73,34 +66,18 @@ export default function DetalheProjeto() {
   }, [projectId]);
 
   const handleToggleTask = async (task: Tarefa) => {
-    Alert.alert(
-      task.concluida ? "Desmarcar tarefa?" : "Concluir tarefa?",
-      `Tem certeza que deseja ${
-        task.concluida ? "desmarcar" : "concluir"
-      } a tarefa "${task.nome}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Sim",
-          onPress: async () => {
-            const endpoint = `Tarefas/${task.objectId}`;
-            const newStatus = !task.concluida;
-            try {
-              await api.put(endpoint, { concluida: newStatus });
-              setTarefas((prevTasks) =>
-                prevTasks.map((t) =>
-                  t.objectId === task.objectId
-                    ? { ...t, concluida: newStatus }
-                    : t
-                )
-              );
-            } catch (e: any) {
-              Alert.alert("Erro", "Não foi possível atualizar a tarefa.");
-            }
-          },
-        },
-      ]
-    );
+    const endpoint = `Tarefas/${task.objectId}`;
+    const newStatus = !task.concluida;
+    try {
+      await api.put(endpoint, { concluida: newStatus });
+      setTarefas((prevTasks) =>
+        prevTasks.map((t) =>
+          t.objectId === task.objectId ? { ...t, concluida: newStatus } : t
+        )
+      );
+    } catch (e: any) {
+      Alert.alert("Erro", "Não foi possível atualizar a tarefa.");
+    }
   };
 
   const handleAddTask = async () => {
@@ -141,7 +118,6 @@ export default function DetalheProjeto() {
       Alert.alert("Sucesso", "Nova tarefa adicionada!");
       setNewTaskName("");
       setNewSelectedIntegrantes([]);
-      animateAdd(); // animação ao adicionar
       fetchProjectDetails();
     } catch (e: any) {
       Alert.alert(
@@ -150,6 +126,7 @@ export default function DetalheProjeto() {
       );
     }
   };
+
   const handleUpdateProject = async () => {
     if (!projectId) return;
     const endpoint = `Projeto/${projectId}`;
@@ -222,8 +199,7 @@ export default function DetalheProjeto() {
 
   return (
     <View style={[styles.body, { backgroundColor: colors.background }]}>
-      <TopBar title="Detalhes do Projeto" showBackButton />{" "}
-      {/* Botão de voltar */}
+      <TopBar title="Detalhes do Projeto" />
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={[styles.label, { color: colors.text }]}>Cadeira</Text>
         <TextInput
@@ -248,10 +224,9 @@ export default function DetalheProjeto() {
         />
 
         <Text style={[styles.label, { color: colors.text }]}>
-          Tarefas do Projeto ({tarefasConcluidas.length}/{tarefas.length}{" "}
-          concluídas)
+          Tarefas do Projeto
         </Text>
-        {tarefasPendentes.map((tarefa) => (
+        {tarefas.map((tarefa) => (
           <View
             key={tarefa.objectId}
             style={[styles.taskCard, { backgroundColor: colors.card }]}
@@ -283,112 +258,55 @@ export default function DetalheProjeto() {
             </Text>
           </View>
         ))}
-        {tarefasConcluidas.length > 0 && (
-          <>
-            <Text style={[styles.label, { color: colors.text, marginTop: 16 }]}>
-              Concluídas
-            </Text>
-            {tarefasConcluidas.map((tarefa) => (
-              <View
-                key={tarefa.objectId}
-                style={[styles.taskCard, { backgroundColor: "#e0e0e0" }]}
-              >
-                <TouchableOpacity
-                  style={styles.taskContent}
-                  onPress={() => handleToggleTask(tarefa)}
-                >
-                  <Image
-                    source={require("../../assets/images/icon-checkbox-checked.png")}
-                    style={[styles.checkbox, { tintColor: "#7B2D2F" }]}
-                  />
-                  <Text
-                    style={[
-                      styles.taskText,
-                      styles.taskTextCompleted,
-                      { color: "#7B2D2F" },
-                    ]}
-                  >
-                    {tarefa.nome}
-                  </Text>
-                </TouchableOpacity>
-                <Text style={[styles.integrantesText, { color: "#7B2D2F" }]}>
-                  ({tarefa.integrantes.join(", ")})
-                </Text>
-              </View>
-            ))}
-          </>
-        )}
 
-        <Animated.View
-          style={{
-            opacity: addAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 0.3],
-            }),
-            transform: [
-              {
-                scale: addAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 1.1],
-                }),
-              },
-            ],
-          }}
+        <View
+          style={[styles.addTaskContainer, { borderTopColor: colors.text }]}
         >
-          <View
-            style={[styles.addTaskContainer, { borderTopColor: colors.text }]}
-          >
-            <Text style={[styles.label, { color: colors.text }]}>
-              Adicionar Nova Tarefa
-            </Text>
-            <TextInput
-              style={[styles.input, { backgroundColor: colors.card }]}
-              placeholder="Nome da nova tarefa"
-              placeholderTextColor="#aaa"
-              value={newTaskName}
-              onChangeText={setNewTaskName}
-            />
-            <Text style={[styles.integrantesLabel, { color: colors.text }]}>
-              Atribuir a:
-            </Text>
-            <View style={styles.integrantesSelector}>
-              {GRUPO_INTEGRANTES.map((nome) => (
-                <TouchableOpacity
-                  key={nome}
+          <Text style={[styles.label, { color: colors.text }]}>
+            Adicionar Nova Tarefa
+          </Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: colors.card }]}
+            placeholder="Nome da nova tarefa"
+            value={newTaskName}
+            onChangeText={setNewTaskName}
+          />
+          <Text style={[styles.integrantesLabel, { color: colors.text }]}>
+            Atribuir a:
+          </Text>
+          <View style={styles.integrantesSelector}>
+            {GRUPO_INTEGRANTES.map((nome) => (
+              <TouchableOpacity
+                key={nome}
+                style={[
+                  styles.integranteChip,
+                  newSelectedIntegrantes.includes(nome) &&
+                    styles.integranteChipSelected,
+                ]}
+                onPress={() => {
+                  setNewSelectedIntegrantes((prev) =>
+                    prev.includes(nome)
+                      ? prev.filter((n) => n !== nome)
+                      : [...prev, nome]
+                  );
+                }}
+              >
+                <Text
                   style={[
-                    styles.integranteChip,
+                    styles.integranteChipText,
                     newSelectedIntegrantes.includes(nome) &&
-                      styles.integranteChipSelected,
+                      styles.integranteChipTextSelected,
                   ]}
-                  onPress={() => {
-                    setNewSelectedIntegrantes((prev) =>
-                      prev.includes(nome)
-                        ? prev.filter((n) => n !== nome)
-                        : [...prev, nome]
-                    );
-                  }}
                 >
-                  <Text
-                    style={[
-                      styles.integranteChipText,
-                      newSelectedIntegrantes.includes(nome) &&
-                        styles.integranteChipTextSelected,
-                    ]}
-                  >
-                    {nome}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <TouchableOpacity
-              style={[styles.addButton, loading && { opacity: 0.5 }]}
-              onPress={handleAddTask}
-              disabled={loading}
-            >
-              <Text style={styles.buttonText}>Adicionar Tarefa</Text>
-            </TouchableOpacity>
+                  {nome}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
-        </Animated.View>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
+            <Text style={styles.buttonText}>Adicionar Tarefa</Text>
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           style={styles.saveButton}

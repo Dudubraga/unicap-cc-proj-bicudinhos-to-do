@@ -1,7 +1,7 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '@react-navigation/native';
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "@react-navigation/native";
+import { Tabs } from "expo-router";
+import React from "react";
 
 export default function TabLayout() {
   const { colors } = useTheme();
@@ -9,10 +9,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.primary, 
-        tabBarInactiveTintColor: colors.border, 
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.border,
         tabBarStyle: {
-          backgroundColor: '#7B2D2F', 
+          backgroundColor: "#7B2D2F",
         },
         headerShown: false,
         tabBarIconStyle: {
@@ -23,7 +23,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Início',
+          title: "Início",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" color={color} size={size} />
           ),
@@ -32,7 +32,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="criar_projeto"
         options={{
-          title: 'Novo Projeto',
+          title: "Novo Projeto",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add-circle-outline" color={color} size={size} />
           ),
@@ -41,9 +41,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="sobre"
         options={{
-          title: 'Sobre',
+          title: "Sobre",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="information-circle-outline" color={color} size={size} />
+            <Ionicons
+              name="information-circle-outline"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />

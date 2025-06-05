@@ -1,16 +1,16 @@
 import {
-  View,
+  ActivityIndicator,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
-  ScrollView,
+  View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useTheme } from "@react-navigation/native";
 import TopBar from "../components/TopBar";
-import { api } from "../services/api";
+import { api } from "../services/api"; // add depois
+import { useTheme } from "@react-navigation/native";
 
 type Tarefa = {
   objectId: string;
@@ -64,6 +64,13 @@ export default function Integrante() {
     };
     fetchTasks();
   }, [nome]);
+
+  const handleNavigateToDetails = (projectId: string) => {
+    router.push({
+      pathname: "./detalhe_projeto",
+      params: { projectId: projectId },
+    });
+  };
 
   const renderContent = () => {
     if (loading) {
