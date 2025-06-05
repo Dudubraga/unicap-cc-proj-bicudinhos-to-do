@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "../services/api";
 import TopBar from "../components/TopBar";
 import { useTheme } from "@react-navigation/native";
-
+//ooooooooiiiiiiiii
 export default function DetalheProjeto() {
   const router = useRouter();
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
@@ -75,7 +75,9 @@ export default function DetalheProjeto() {
   const handleToggleTask = async (task: Tarefa) => {
     Alert.alert(
       task.concluida ? "Desmarcar tarefa?" : "Concluir tarefa?",
-      `Tem certeza que deseja ${task.concluida ? "desmarcar" : "concluir"} a tarefa "${task.nome}"?`,
+      `Tem certeza que deseja ${
+        task.concluida ? "desmarcar" : "concluir"
+      } a tarefa "${task.nome}"?`,
       [
         { text: "Cancelar", style: "cancel" },
         {
@@ -87,7 +89,9 @@ export default function DetalheProjeto() {
               await api.put(endpoint, { concluida: newStatus });
               setTarefas((prevTasks) =>
                 prevTasks.map((t) =>
-                  t.objectId === task.objectId ? { ...t, concluida: newStatus } : t
+                  t.objectId === task.objectId
+                    ? { ...t, concluida: newStatus }
+                    : t
                 )
               );
             } catch (e: any) {
@@ -218,7 +222,8 @@ export default function DetalheProjeto() {
 
   return (
     <View style={[styles.body, { backgroundColor: colors.background }]}>
-      <TopBar title="Detalhes do Projeto" showBackButton /> {/* Botão de voltar */}
+      <TopBar title="Detalhes do Projeto" showBackButton />{" "}
+      {/* Botão de voltar */}
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={[styles.label, { color: colors.text }]}>Cadeira</Text>
         <TextInput
@@ -243,7 +248,8 @@ export default function DetalheProjeto() {
         />
 
         <Text style={[styles.label, { color: colors.text }]}>
-          Tarefas do Projeto ({tarefasConcluidas.length}/{tarefas.length} concluídas)
+          Tarefas do Projeto ({tarefasConcluidas.length}/{tarefas.length}{" "}
+          concluídas)
         </Text>
         {tarefasPendentes.map((tarefa) => (
           <View
@@ -279,7 +285,9 @@ export default function DetalheProjeto() {
         ))}
         {tarefasConcluidas.length > 0 && (
           <>
-            <Text style={[styles.label, { color: colors.text, marginTop: 16 }]}>Concluídas</Text>
+            <Text style={[styles.label, { color: colors.text, marginTop: 16 }]}>
+              Concluídas
+            </Text>
             {tarefasConcluidas.map((tarefa) => (
               <View
                 key={tarefa.objectId}
@@ -373,10 +381,7 @@ export default function DetalheProjeto() {
               ))}
             </View>
             <TouchableOpacity
-              style={[
-                styles.addButton,
-                loading && { opacity: 0.5 },
-              ]}
+              style={[styles.addButton, loading && { opacity: 0.5 }]}
               onPress={handleAddTask}
               disabled={loading}
             >
