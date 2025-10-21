@@ -1,4 +1,4 @@
-# 🚀 Portfólio Mobile
+# 🚀 Bicudinho's To Do
 > Projeto da disciplina de [Programação Web e Mobile](https://github.com/Dudubraga/unicap-cc-programacao-web-e-mobile)
 
 ## 📖 Visão Geral
